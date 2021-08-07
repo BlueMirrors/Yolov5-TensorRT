@@ -1,9 +1,12 @@
 # Yolov5 TensorRT
 
-[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1tXLk2KFZkXQ7SpTBbmQ_Y43Eo1_34Rsf?usp=sharing)
 
-YOLOv5 conversion and inference using TensorRT (FP16), with no complicated installations setup and zero precession loss!<br>
-[FPS Info](#fps-and-accuracy-info)
+YOLOv5 conversion and inference using TensorRT (FP16), with no complicated installations setup and zero precession loss!
+
+- [FPS Info](#fps-and-accuracy-info)
+
+- [Google-Colab](https://colab.research.google.com/drive/1tXLk2KFZkXQ7SpTBbmQ_Y43Eo1_34Rsf?usp=sharing)
 
 ## Inference with TensorRT
 
