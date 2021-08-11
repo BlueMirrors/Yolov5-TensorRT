@@ -1,2 +1,2 @@
-cvu-python
+git+https://github.com/BlueMirrors/cvu
 vidsz
