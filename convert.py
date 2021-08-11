@@ -15,7 +15,7 @@ def convert_onnx_to_trt(onnx_weights, image_shape, nc):
         image_shape += (3, )
 
     start = time.time()
-    convert = Yolov5Trt(classes=['0'] * nc,
+    convert = Yolov5Trt(classes=list(map(str, range(nc))),
                         weight=onnx_weights,
                         backend="tensorrt")
     print(image_shape)
@@ -42,6 +42,13 @@ if __name__ == "__main__":
     opt = parser.parse_args()
 
     print(opt.weights)
+
+    # check if engine already exists
+    if os.path.exists(opt.weights.replace("onnx", "engine")):
+        print("Engine Already Exists. Please rename it",
+              "or remove it to build a new engine from scratch.")
+        exit()
+
     if not os.path.exists(opt.weights):
         if opt.weights == 'yolov5s.onnx':
             print(f"Warnning: {opt.weights} not found,",
