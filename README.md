@@ -28,7 +28,7 @@ python detect.py --input $PATH_TO_INPUT_FILE --output $OUTPUT_FILE_NAME
 
 <br>
 
-You can also pass ```--weights``` to use your own custom onnx weight file (it'll generate tensorrt engine file internally) or tensorrt engine file (generated from convert.py). 
+You can also pass ```--weights``` to use your own custom onnx weight file (it'll generate tensorrt engine file internally) or tensorrt engine file (generated from convert.py). You can also pass ```--classes``` for your custom trained weights and/or to filter classes for COCO.
 
 For pretrained default weights (```--weights yolov5s```), scripts will download + internally generate new engine file for unseen input shape, but if you are using a custom weight then remeber to rename or remove engine file if you want to generate engines for different shapes. 
 
