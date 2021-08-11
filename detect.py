@@ -15,8 +15,8 @@ from vidsz.opencv import Reader, Writer
 from cvu.utils.google_utils import gdrive_download
 
 
-def detect_video(weight, input_video, output_video=None):
-    model = Yolov5Trt(classes="coco", backend="tensorrt", weight=weight)
+def detect_video(weight, input_video, output_video=None, classes="coco"):
+    model = Yolov5Trt(classes=classes, backend="tensorrt", weight=weight)
     reader = Reader(input_video)
     writer = Writer(reader,
                     name=output_video) if output_video is not None else None
@@ -45,9 +45,9 @@ def detect_video(weight, input_video, output_video=None):
     reader.release()
 
 
-def detect_image(weight, image_path, output_image):
+def detect_image(weight, image_path, output_image, classes="coco"):
     # load model
-    model = Yolov5Trt(classes="coco", backend="tensorrt", weight=weight)
+    model = Yolov5Trt(classes=classes, backend="tensorrt", weight=weight)
 
     # read image
     image = cv2.imread(image_path)
@@ -81,7 +81,17 @@ if __name__ == "__main__":
                         default='out.mp4',
                         help='name of output video or image file')
 
+    parser.add_argument('--classes',
+                        nargs='+',
+                        default=None,
+                        type=str,
+                        help=(('custom classes or filter coco classes ' +
+                               'classes: --class car bus person')))
+
     opt = parser.parse_args()
+
+    if opt.classes is None:
+        opt.classes = 'coco'
 
     # image file
     input_ext = os.path.splitext(opt.input)[-1]
@@ -90,11 +100,11 @@ if __name__ == "__main__":
     if input_ext in (".jpg", ".jpeg", ".png"):
         if output_ext not in ((".jpg", ".jpeg", ".png")):
             opt.output = opt.output.replace(output_ext, input_ext)
-        detect_image(opt.weights, opt.input, opt.output)
+        detect_image(opt.weights, opt.input, opt.output, opt.classes)
 
     # video file
     else:
         if not os.path.exists(opt.input) and opt.input == 'people.mp4':
             gdrive_download("1rioaBCzP9S31DYVh-tHplQ3cgvgoBpNJ", "people.mp4")
 
-        detect_video(opt.weights, opt.input, opt.output)
+        detect_video(opt.weights, opt.input, opt.output, opt.classes)
