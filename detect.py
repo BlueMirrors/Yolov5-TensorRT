@@ -15,8 +15,19 @@ from vidsz.opencv import Reader, Writer
 from cvu.utils.google_utils import gdrive_download
 
 
-def detect_video(weight, input_video, output_video=None, classes="coco"):
-    model = Yolov5Trt(classes=classes, backend="tensorrt", weight=weight)
+def detect_video(weight,
+                 input_video,
+                 output_video=None,
+                 classes="coco",
+                 auto_install=True):
+
+    # load model
+    model = Yolov5Trt(classes=classes,
+                      backend="tensorrt",
+                      weight=weight,
+                      auto_install=auto_install)
+
+    # setup video reader and writer
     reader = Reader(input_video)
     writer = Writer(reader,
                     name=output_video) if output_video is not None else None
@@ -45,9 +56,16 @@ def detect_video(weight, input_video, output_video=None, classes="coco"):
     reader.release()
 
 
-def detect_image(weight, image_path, output_image, classes="coco"):
+def detect_image(weight,
+                 image_path,
+                 output_image,
+                 classes="coco",
+                 auto_install=True):
     # load model
-    model = Yolov5Trt(classes=classes, backend="tensorrt", weight=weight)
+    model = Yolov5Trt(classes=classes,
+                      backend="tensorrt",
+                      weight=weight,
+                      auto_install=auto_install)
 
     # read image
     image = cv2.imread(image_path)
@@ -88,6 +106,10 @@ if __name__ == "__main__":
                         help=(('custom classes or filter coco classes ' +
                                'classes: --class car bus person')))
 
+    parser.add_argument('--no-auto-install',
+                        action='store_true',
+                        help="Turn off auto install feature")
+
     opt = parser.parse_args()
 
     if opt.classes is None:
@@ -100,11 +122,13 @@ if __name__ == "__main__":
     if input_ext in (".jpg", ".jpeg", ".png"):
         if output_ext not in ((".jpg", ".jpeg", ".png")):
             opt.output = opt.output.replace(output_ext, input_ext)
-        detect_image(opt.weights, opt.input, opt.output, opt.classes)
+        detect_image(opt.weights, opt.input, opt.output, opt.classes,
+                     not opt.no_auto_install)
 
     # video file
     else:
         if not os.path.exists(opt.input) and opt.input == 'people.mp4':
             gdrive_download("1rioaBCzP9S31DYVh-tHplQ3cgvgoBpNJ", "people.mp4")
 
-        detect_video(opt.weights, opt.input, opt.output, opt.classes)
+        detect_video(opt.weights, opt.input, opt.output, opt.classes,
+                     not opt.no_auto_install)

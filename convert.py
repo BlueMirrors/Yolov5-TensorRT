@@ -6,7 +6,8 @@ from cvu.utils.google_utils import gdrive_download
 from cvu.detector.yolov5 import Yolov5 as Yolov5Trt
 
 
-def convert_onnx_to_trt(onnx_weights, image_shape, nc):
+def convert_onnx_to_trt(onnx_weights, image_shape, nc, auto_install=True):
+    # sanity check image shape
     if isinstance(image_shape, int) or isinstance(image_shape, list):
         image_shape = tuple(image_shape)
     if len(image_shape) == 1:
@@ -17,7 +18,8 @@ def convert_onnx_to_trt(onnx_weights, image_shape, nc):
     start = time.time()
     convert = Yolov5Trt(classes=list(map(str, range(nc))),
                         weight=onnx_weights,
-                        backend="tensorrt")
+                        backend="tensorrt",
+                        auto_install=auto_install)
     print(image_shape)
     convert(np.random.randint(0, 255, image_shape).astype("float"))
     print("\n\nTotal Time Taken: ", round(time.time() - start, 2), "seconds.")
@@ -38,6 +40,9 @@ if __name__ == "__main__":
                         help='image (height, width)')
 
     parser.add_argument('--nc', type=int, default=80, help='number of classes')
+    parser.add_argument('--no-auto-install',
+                        action='store_true',
+                        help="Turn off auto install feature")
 
     opt = parser.parse_args()
 
@@ -60,4 +65,7 @@ if __name__ == "__main__":
                 (f"ONNX weight file not found at {opt.weights}." +
                  " Please check again."))
 
-    convert_onnx_to_trt(opt.weights, image_shape=opt.img_size, nc=opt.nc)
+    convert_onnx_to_trt(opt.weights,
+                        image_shape=opt.img_size,
+                        nc=opt.nc,
+                        auto_install=not opt.no_auto_install)
