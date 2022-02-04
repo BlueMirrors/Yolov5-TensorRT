@@ -19,6 +19,7 @@ def convert_onnx_to_trt(onnx_weights, image_shape, nc, fp16, auto_install=True):
     convert = Yolov5Trt(classes=list(map(str, range(nc))),
                         weight=onnx_weights,
                         backend="tensorrt",
+                        auto_install=auto_install,
                         fp16=fp16)
     print(image_shape)
     convert(np.random.randint(0, 255, image_shape).astype("float"))
@@ -43,9 +44,9 @@ if __name__ == "__main__":
     parser.add_argument('--no-auto-install',
                         action='store_true',
                         help="Turn off auto install feature")
-    parser.add_argument('--fp16',
+    parser.add_argument('--fp32',
                         action='store_true',
-                        help="Create yolov5 engine with FP16 precision")
+                        help="Create yolov5 engine with FP32 precision")
 
     opt = parser.parse_args()
 
@@ -71,5 +72,5 @@ if __name__ == "__main__":
     convert_onnx_to_trt(opt.weights,
                         image_shape=opt.img_size,
                         nc=opt.nc,
-                        fp16=opt.fp16,
+                        fp16=not opt.fp32,
                         auto_install=not opt.no_auto_install)
