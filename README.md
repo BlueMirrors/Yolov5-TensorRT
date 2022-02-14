@@ -42,11 +42,13 @@ You can convert ONNX weights to TensorRT by using the `convert.py` file. Simple 
 python convert.py --weights yolov5s.engine --img-size 720 1080
 ```
 
-1. If using default weights, you do not need to download the ONNX model as the script will download it.
+1. By default the onnx model is converted to TensorRT engine with FP16 precision. To convert to TensorRT engine with FP32 precision use ```--fp32``` when running the above command.
 
-2. If you want to build the engine with custom image size, pass `--img-size custom_img_size` to `convert.py`
+2. If using default weights, you do not need to download the ONNX model as the script will download it.
 
-3. If you want to build the engine for your custom weights, simply do the following:
+3. If you want to build the engine with custom image size, pass `--img-size custom_img_size` to `convert.py`
+
+4. If you want to build the engine for your custom weights, simply do the following:
 
     - [Train Yolov5 on your custom dataset](https://github.com/ultralytics/yolov5/wiki/Train-Custom-Data)
     - [Export Weights PyTorch weights to ONNX](https://github.com/ultralytics/yolov5/blob/master/export.py)
