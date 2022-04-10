@@ -8,7 +8,7 @@ YOLOv5 conversion and inference using TensorRT (FP16), with no complicated insta
 
 - [Google-Colab](https://colab.research.google.com/drive/1tXLk2KFZkXQ7SpTBbmQ_Y43Eo1_34Rsf?usp=sharing)
 
-## Inference with TensorRT
+## Inference with TensorRT (without Docker)
 
 Tested with Linux based systems (Colab T4/P4/K80, Jetson-Nano (with jetpack installed), Ubuntu-GTX 1650)
 
@@ -38,7 +38,7 @@ For pretrained default weights (```--weights yolov5s```), scripts will download 
 
 You can convert ONNX weights to TensorRT by using the `convert.py` file. Simple run the following command: 
 
-```
+```bash
 python convert.py --weights yolov5s.engine --img-size 720 1080
 ```
 
@@ -61,6 +61,44 @@ python convert.py --weights yolov5s.engine --img-size 720 1080
 
     Now simply use `python convert.py --weights path_to_custom_weights.onnx`, and you will have a converted TensorRT engine. Also add ```--nc``` (number of classes) if your custom model has different number of classes than COCO(i.e. 80 classes). 
     
+
+## Yolov5-Tensorrt in Docker
+- Set up [docker](https://docs.docker.com/engine/install/) and [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html). 
+
+- Pull TensorRT 8.2.2 docker image. Read more about this container [release](https://docs.nvidia.com/deeplearning/tensorrt/container-release-notes/rel_22-01.html#rel_22-01).
+```bash
+ docker pull nvcr.io/nvidia/tensorrt:22.01-py3
+```
+
+- Run the container image copying Yolov5-TensorRT in the /home folder.
+```bash
+ docker run --gpus all -it -v /path/to/Yolov5-TensorRT:/home nvcr.io/nvidia/tensorrt:22.01-py3
+```
+If this is successful, you should be inside the docker container.
+
+- Install requirements inside docker container.
+```bash
+ cd /home
+ pip install -r requirements.txt
+```
+- Install OpenCV dependencies.
+```bash
+ apt-get update
+ apt-get install ffmpeg libsm6 libxext6  -y
+```
+
+- Usual Yolov5-TensorRT execution. Run inference on a image/video.
+```bash
+ python detect.py --input $PATH_TO_INPUT_FILE --output $OUTPUT_FILE_NAME
+```
+
+- Convert custom onnx yolov5 model to tensorrt
+```bash
+ cd /home
+ python convert.py --weights yolov5s.engine --img-size 720 1080
+```
+
+
 ## FPS and Accuracy Info
 ***In our tests, TensorRT had identical outputs as original pytorch weights.***
 
