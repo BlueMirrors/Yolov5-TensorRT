@@ -19,13 +19,15 @@ def detect_video(weight,
                  input_video,
                  output_video=None,
                  classes="coco",
-                 auto_install=True):
+                 auto_install=True,
+                 dtype="fp16"):
 
     # load model
     model = Yolov5Trt(classes=classes,
                       backend="tensorrt",
                       weight=weight,
-                      auto_install=auto_install)
+                      auto_install=auto_install,
+                      dtype=dtype)
 
     # setup video reader and writer
     reader = Reader(input_video)
@@ -60,12 +62,14 @@ def detect_image(weight,
                  image_path,
                  output_image,
                  classes="coco",
-                 auto_install=True):
+                 auto_install=True,
+                 dtype="fp16"):
     # load model
     model = Yolov5Trt(classes=classes,
                       backend="tensorrt",
                       weight=weight,
-                      auto_install=auto_install)
+                      auto_install=auto_install,
+                      dtype=dtype)
 
     # read image
     image = cv2.imread(image_path)
@@ -110,6 +114,12 @@ if __name__ == "__main__":
                         action='store_true',
                         help="Turn off auto install feature")
 
+    parser.add_argument('--dtype',
+                        type=str,
+                        default='fp16',
+                        choices=['fp16', 'fp32'],
+                        help="set engine precision")
+
     opt = parser.parse_args()
 
     if opt.classes is None:
@@ -123,7 +133,7 @@ if __name__ == "__main__":
         if output_ext not in ((".jpg", ".jpeg", ".png")):
             opt.output = opt.output.replace(output_ext, input_ext)
         detect_image(opt.weights, opt.input, opt.output, opt.classes,
-                     not opt.no_auto_install)
+                     not opt.no_auto_install, opt.dtype.lower())
 
     # video file
     else:
@@ -131,4 +141,4 @@ if __name__ == "__main__":
             gdrive_download("1rioaBCzP9S31DYVh-tHplQ3cgvgoBpNJ", "people.mp4")
 
         detect_video(opt.weights, opt.input, opt.output, opt.classes,
-                     not opt.no_auto_install)
+                     not opt.no_auto_install, opt.dtype.lower())
