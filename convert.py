@@ -6,7 +6,11 @@ from cvu.utils.google_utils import gdrive_download
 from cvu.detector.yolov5 import Yolov5 as Yolov5Trt
 
 
-def convert_onnx_to_trt(onnx_weights, image_shape, nc, fp16, auto_install=True):
+def convert_onnx_to_trt(onnx_weights,
+                        image_shape,
+                        nc,
+                        auto_install=True,
+                        dtype="fp16"):
     # sanity check image shape
     if isinstance(image_shape, int) or isinstance(image_shape, list):
         image_shape = tuple(image_shape)
@@ -20,7 +24,7 @@ def convert_onnx_to_trt(onnx_weights, image_shape, nc, fp16, auto_install=True):
                         weight=onnx_weights,
                         backend="tensorrt",
                         auto_install=auto_install,
-                        fp16=fp16)
+                        dtype=dtype)
     print(image_shape)
     convert(np.random.randint(0, 255, image_shape).astype("float"))
     print("\n\nTotal Time Taken: ", round(time.time() - start, 2), "seconds.")
@@ -44,9 +48,11 @@ if __name__ == "__main__":
     parser.add_argument('--no-auto-install',
                         action='store_true',
                         help="Turn off auto install feature")
-    parser.add_argument('--fp32',
-                        action='store_true',
-                        help="Create yolov5 engine with FP32 precision")
+    parser.add_argument('--dtype',
+                        type=str,
+                        default='fp16',
+                        choices=['fp16', 'fp32'],
+                        help="set engine precision")
 
     opt = parser.parse_args()
 
@@ -72,5 +78,5 @@ if __name__ == "__main__":
     convert_onnx_to_trt(opt.weights,
                         image_shape=opt.img_size,
                         nc=opt.nc,
-                        fp16=not opt.fp32,
-                        auto_install=not opt.no_auto_install)
+                        auto_install=not opt.no_auto_install,
+                        dtype=opt.dtype.lower())
