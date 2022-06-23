@@ -95,7 +95,7 @@ If this is successful, you should be inside the docker container.
 - Convert custom onnx yolov5 model to tensorrt
 ```bash
  cd /home
- python convert.py --weights yolov5s.engine --img-size 720 1080
+ python convert.py --weights yolov5s.onnx --img-size 720 1080
 ```
 
 
