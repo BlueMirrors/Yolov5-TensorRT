@@ -39,7 +39,7 @@ For pretrained default weights (```--weights yolov5s```), scripts will download 
 You can convert ONNX weights to TensorRT by using the `convert.py` file. Simple run the following command: 
 
 ```bash
-python convert.py --weights yolov5s.engine --img-size 720 1080
+python convert.py --weights yolov5s.onnx --img-size 720 1080
 ```
 
 1. By default the onnx model is converted to TensorRT engine with FP16 precision. To convert to TensorRT engine with FP32 precision use ```--fp32``` when running the above command.
